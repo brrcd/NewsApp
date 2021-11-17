@@ -7,7 +7,7 @@ import coil.load
 import com.example.mynewsapp.databinding.NewsRvItemBinding
 import com.example.mynewsapp.model.News
 
-class NewsFeedAdapter: RecyclerView.Adapter<NewsFeedAdapter.NewsFeedViewHolder>() {
+class NewsFeedAdapter(private val onItemViewClickListener: OnItemViewClickListener): RecyclerView.Adapter<NewsFeedAdapter.NewsFeedViewHolder>() {
 
     private var newsList = listOf<News>()
     private var placeholderImageRes: Int = 0
@@ -29,6 +29,9 @@ class NewsFeedAdapter: RecyclerView.Adapter<NewsFeedAdapter.NewsFeedViewHolder>(
                 news.urlToImage
             ) {
                 placeholder(placeholderImageRes)
+            }
+            itemView.setOnClickListener {
+                onItemViewClickListener.onItemViewClick(news)
             }
         }
     }

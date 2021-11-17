@@ -2,31 +2,38 @@ package com.example.mynewsapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mynewsapp.AppState
 import com.example.mynewsapp.repository.NewsFeedRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import com.google.gson.Gson
+import kotlinx.coroutines.*
+import okhttp3.ResponseBody
+import org.json.JSONObject
+import retrofit2.Retrofit
 
 class NewsFeedViewModel(private val repository: NewsFeedRepository) : ViewModel() {
 
     private val liveDataToObserve: MutableLiveData<AppState> = MutableLiveData()
-    private var job : Job? = null
 
     fun getLiveData() = liveDataToObserve
 
     fun getListOfNews(countryCode: String) {
         liveDataToObserve.value = AppState.Loading
-        job = CoroutineScope(Dispatchers.Default).launch {
-            val data = repository.getListOfNews(countryCode).articles
-
-            liveDataToObserve.postValue(data?.let { AppState.Success(it) })
+        viewModelScope.launch(Dispatchers.Default) {
+            val response = repository.getListOfNews(countryCode)
+            if (response.isSuccessful) {
+                if (response.body()?.articles?.isEmpty() == true) {
+                    liveDataToObserve.postValue(AppState.Error("Bad request!"))
+                } else {
+                    liveDataToObserve.postValue(response.body()?.articles?.let { AppState.Success(it) })
+                }
+            } else {
+                liveDataToObserve.postValue(
+                    AppState.Error(
+                        "Error! No Connection or bad api key."
+                    )
+                )
+            }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job?.cancel()
     }
 }
