@@ -2,8 +2,6 @@ package com.example.mynewsapp.api
 
 import com.example.mynewsapp.BuildConfig
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import java.util.concurrent.TimeUnit
 
 object ApiUtils {
     private const val mainUrlPart = "https://newsapi.org/v2"
@@ -11,11 +9,7 @@ object ApiUtils {
 
     const val url = "$mainUrlPart/"
 
-    // TODO remove this interceptor
-    private val interceptor = HttpLoggingInterceptor()
-
     fun getOkHttpClient(): OkHttpClient {
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val httpClient = OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val origin = chain.request()
@@ -24,7 +18,6 @@ object ApiUtils {
                 val request = requestBuilder.build()
                 chain.proceed(request)
             }
-            .addInterceptor(interceptor)
             .build()
         return httpClient
     }

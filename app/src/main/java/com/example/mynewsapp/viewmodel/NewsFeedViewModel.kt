@@ -1,15 +1,13 @@
 package com.example.mynewsapp.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mynewsapp.AppState
+import com.example.mynewsapp.model.NewsDTO
 import com.example.mynewsapp.repository.NewsFeedRepository
-import com.google.gson.Gson
 import kotlinx.coroutines.*
-import okhttp3.ResponseBody
-import org.json.JSONObject
-import retrofit2.Retrofit
 
 class NewsFeedViewModel(private val repository: NewsFeedRepository) : ViewModel() {
 
@@ -25,7 +23,18 @@ class NewsFeedViewModel(private val repository: NewsFeedRepository) : ViewModel(
                 if (response.body()?.articles?.isEmpty() == true) {
                     liveDataToObserve.postValue(AppState.Error("Bad request!"))
                 } else {
-                    liveDataToObserve.postValue(response.body()?.articles?.let { AppState.Success(it) })
+                    liveDataToObserve.postValue(
+                        AppState.Success(
+                            NewsDTO(
+                                response.body()?.articles
+                            )
+                        )
+                    )
+                    val listOfUrls = mutableListOf<String>()
+                    response.body()?.articles?.forEach {
+                        it.urlToImage?.let { it1 -> listOfUrls.add(it1) }
+                    }
+                    repository.saveUrlsToDB(listOfUrls)
                 }
             } else {
                 liveDataToObserve.postValue(

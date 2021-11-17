@@ -62,7 +62,7 @@ class NewsFeedFragment : Fragment() {
     private fun renderData(appState: AppState) = with(binding) {
         when (appState) {
             is AppState.Success -> {
-                adapter.setNewsList(appState.newsList)
+                appState.newsDTO.newsList?.let { adapter.setNewsList(it) }
                 adapter.setPlaceholderImageRes(placeholderImage)
                 recyclerView.adapter = adapter
                 newsFeedFragment.isRefreshing = false

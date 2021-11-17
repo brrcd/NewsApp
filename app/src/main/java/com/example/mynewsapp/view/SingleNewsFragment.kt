@@ -43,10 +43,5 @@ class SingleNewsFragment : Fragment() {
 
     companion object {
         const val SINGLE_NEWS_BUNDLE = "single_news_bundle"
-
-        fun newInstance(bundle: Bundle): Fragment =
-            SingleNewsFragment().also {
-                it.arguments = bundle
-            }
     }
 }
