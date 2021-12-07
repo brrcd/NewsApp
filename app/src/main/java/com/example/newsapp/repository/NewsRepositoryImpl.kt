@@ -17,6 +17,9 @@ class NewsRepositoryImpl
                 .getListOfNewsFromDB(),
             remoteRepository
                 .getListOfNews(countryCode)
-                .toObservable()
+                .flatMapObservable { response ->
+                    localRepository
+                        .saveNewsToDB(response.articles)
+                }
         )
 }

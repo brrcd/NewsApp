@@ -11,10 +11,17 @@ import com.example.newsapp.Screens
 import com.example.newsapp.adapter.NewsFeedAdapter
 import com.example.newsapp.adapter.OnItemViewClickListener
 import com.example.newsapp.databinding.NewsFeedFragmentBinding
+import com.example.newsapp.db.NewsDatabase
 import com.example.newsapp.di.AbsFragment
 import com.example.newsapp.model.News
 import com.example.newsapp.repository.NewsRepository
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.functions.Action
+import io.reactivex.rxjava3.schedulers.Schedulers
 import moxy.ktx.moxyPresenter
+import java.util.*
 import javax.inject.Inject
 
 class NewsFeedFragment : AbsFragment(R.layout.news_feed_fragment), NewsFeedView {
@@ -31,6 +38,9 @@ class NewsFeedFragment : AbsFragment(R.layout.news_feed_fragment), NewsFeedView 
         )
     }
     private val placeholderImage = R.drawable.placeholder_image
+
+    @Inject
+    lateinit var db: NewsDatabase
 
     @Inject
     lateinit var repository: NewsRepository

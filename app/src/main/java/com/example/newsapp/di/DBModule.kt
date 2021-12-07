@@ -14,7 +14,7 @@ class DBModule {
         Room.databaseBuilder(
             context,
             NewsDatabase::class.java,
-            "images_db"
+            "news_db"
         )
             .fallbackToDestructiveMigration()
             .build()
