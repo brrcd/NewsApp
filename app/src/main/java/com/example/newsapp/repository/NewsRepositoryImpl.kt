@@ -4,6 +4,7 @@ import com.example.newsapp.model.News
 import com.example.newsapp.newsfeed.repository.LocalRepository
 import com.example.newsapp.newsfeed.repository.RemoteRepository
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class NewsRepositoryImpl
@@ -17,6 +18,10 @@ class NewsRepositoryImpl
                 .getListOfNewsFromDB(),
             remoteRepository
                 .getListOfNews(countryCode)
-                .toObservable()
+                .flatMapObservable {
+                    localRepository.saveNewsToDB(it)
+                    Observable.just(it)
+                        .subscribeOn(Schedulers.io())
+                }
         )
 }
