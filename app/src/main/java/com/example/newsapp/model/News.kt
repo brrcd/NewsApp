@@ -9,9 +9,9 @@ import kotlinx.parcelize.Parcelize
 @Entity
 @Parcelize
 data class News(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @SerializedName("id")
-    val id: Int,
+    val id: Long,
     @SerializedName("title")
     val title: String?,
     @SerializedName("description")
