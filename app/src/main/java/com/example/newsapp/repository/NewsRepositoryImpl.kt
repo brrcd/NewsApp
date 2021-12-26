@@ -18,10 +18,9 @@ class NewsRepositoryImpl
                 .getListOfNewsFromDB(),
             remoteRepository
                 .getListOfNews(countryCode)
-                .flatMapObservable {
-                    localRepository.saveNewsToDB(it)
-                    Observable.just(it)
-                        .subscribeOn(Schedulers.io())
+                .flatMapObservable { response ->
+                    localRepository
+                        .saveNewsToDB(response.articles)
                 }
         )
 }
